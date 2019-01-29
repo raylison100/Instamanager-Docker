@@ -1,13 +1,51 @@
-VERSION 3
-
-VOLUMES:
-
-REDES:
-
-SERVICES :
- 
-  BACK:
-
-  DB:
-
-  FRONT:
+version: '3'
+volumes:
+  dados:
+networks:
+  banco:
+  back:
+  front:
+services:
+  db:
+    container_name: mysql
+    restart: always
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ${MYSQL_DATA}:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    networks:
+      - banco 
+  # frontend:
+  #   container_name: FRONT
+  #   restart: always
+  #   image: 
+  #   volumes:  
+  #   ports:
+  #   networks:
+  #   depends_on:
+  banckend:
+    container_name: BACK
+    restart: always
+    build:
+      context: ./Back
+      dockerfile: Dockerfile
+    volumes:
+      # Aplicação
+      - ./app:/app
+    working_dir: /app
+    command: bash ./app.sh
+    networks:
+      - banco
+      - back
+    depends_on:
+      - db
+    environment:
+      - DB_NAME=instamanager
