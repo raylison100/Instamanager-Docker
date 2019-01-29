@@ -10,8 +10,8 @@ RUN apt-get update && \
     apt-get upgrade -y
 
 # install some prerequisites
-RUN apt-get install -y software-properties-common curl build-essential \
-    apt-get install git 
+RUN apt-get install -y curl && \
+    apt-get install -y git 
 
 # add some repositories
 RUN apt-add-repository ppa:nginx/stable -y && \
